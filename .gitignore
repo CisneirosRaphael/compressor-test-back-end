@@ -1,4 +1,4 @@
-cd b__pycache__
+__pycache__
 log/
 model/__pycache__
 schemas/__pycache__
