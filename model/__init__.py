@@ -8,7 +8,7 @@ from model.base import Base
 from model.compressor_test import CompressorTest
 
 # Define the path to the directory where the database will be stored
-db_path = Path("/database")
+db_path = Path.cwd() / "database"
 # check if the folder exists
 if not db_path.exists():
    # create the directory if it does not exist
