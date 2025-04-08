@@ -1,0 +1,4 @@
+database/
+log/
+/model/__pycache__
+/schemas/__pycache__
