@@ -4,7 +4,7 @@ from urllib.parse import unquote
 from sqlalchemy.exc import IntegrityError
 from model import Session, CompressorTest
 from logger import logger
-from schemas import *
+from schemas import * 
 from flask_cors import CORS
 
 # API data
@@ -14,7 +14,7 @@ CORS(app)
 
 # Define tags for API endpoints
 home_tag = Tag(name="Documentation", description="Select documentation type")
-compressor_test_tag = Tag(name="CompressorTest", description="Add, delete and visualize compressor test to the database")
+compressor_test_tag = Tag(name="CompressorTest", description="Add, delete, update and visualize compressor test to the database")
 
 @app.get('/', tags=[home_tag])
 def home():
@@ -167,6 +167,77 @@ def del_compressor_test(query: CompressorTestSearchSchema):
                        and project '{compressor_test_project}', {error_msg}")
         return {"message": error_msg}, 404
     
+@app.put('/compressor_test', tags=[compressor_test_tag],
+         responses={"200": CompressorTestViewSchema, "404": ErrorSchema, "400": ErrorSchema})
+def update_compressor_test(query: CompressorTestSearchSchema, form: CompressorTestUpdateSchema):
+    """
+    Update an existing Compressor Test in the database based on Tag and Project.
+    
+    Returns:
+        Representation of the updated compressor test data.
+    """
+    compressor_test_tag = unquote(unquote(query.tag))
+    compressor_test_project = unquote(unquote(query.project))
+    
+    logger.debug(f"Updating compressor test with Tag number '{compressor_test_tag}' \
+                 and project '{compressor_test_project}'")
+    
+    try:
+        # Connect to the database
+        session = Session()
+        
+        # Find the existing compressor test
+        compressor_test = session.query(CompressorTest).filter(
+            CompressorTest.tag == compressor_test_tag,
+            CompressorTest.project == compressor_test_project
+        ).first()
+        
+        if not compressor_test:
+            error_msg = "Compressor test not found in the database."
+            logger.warning(f"Failed to find compressor test with Tag number '{compressor_test_tag}' \
+                           and project '{compressor_test_project}' for update, {error_msg}")
+            return {"message": error_msg}, 404
+        
+        # Update the fields with new values (only update if provided)
+        if hasattr(form, 'model') and form.model is not None and form.model is not None and form.model != "":
+            compressor_test.model = form.model
+        if hasattr(form, 'clearance_de') and form.clearance_de is not None and form.clearance_de != "":
+            compressor_test.clearance_de = form.clearance_de
+        if hasattr(form, 'clearance_nde') and form.clearance_nde is not None and form.clearance_nde != "":
+            compressor_test.clearance_nde = form.clearance_nde
+        if hasattr(form, 'unbalance_mass') and form.unbalance_mass is not None and form.unbalance_mass != "":
+            compressor_test.unbalance_mass = form.unbalance_mass
+        if hasattr(form, 'oil_temperature') and form.oil_temperature is not None and form.oil_temperature != "":
+            compressor_test.oil_temperature = form.oil_temperature
+        if hasattr(form, 'tag_de_x') and form.tag_de_x is not None and form.tag_de_x != "":
+            compressor_test.tag_de_x = form.tag_de_x
+        if hasattr(form, 'tag_de_y') and form.tag_de_y is not None and form.tag_de_y != "":
+            compressor_test.tag_de_y = form.tag_de_y
+        if hasattr(form, 'tag_nde_x') and form.tag_nde_x is not None and form.tag_nde_x != "":
+            compressor_test.tag_nde_x = form.tag_nde_x
+        if hasattr(form, 'tag_nde_y') and form.tag_nde_y is not None and form.tag_nde_y != "":
+            compressor_test.tag_nde_y = form.tag_nde_y
+        if hasattr(form, 'country') and form.country is not None and form.country != "":
+            compressor_test.country = form.country
+        
+        # Commit the changes
+        session.commit()
+        
+        logger.debug(f"Updated compressor test with Tag number '{compressor_test_tag}' \
+                     and project '{compressor_test_project}'")
+        
+        return show_compressor_test(compressor_test), 200
+        
+    except Exception as e:
+        # Handle unexpected errors
+        error_msg = "It was not possible to update this item in the database."
+        logger.warning(f"Failed to update compressor test with Tag number '{compressor_test_tag}' \
+                       and project '{compressor_test_project}', {error_msg}")
+        return {"message": error_msg}, 400
+    
+# # No final do seu arquivo app.py, adicione:
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
     

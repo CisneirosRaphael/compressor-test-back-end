@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, field_validator, Field
+from typing import Optional, List, Dict, Any
 from model.compressor_test import CompressorTest
 
 
@@ -19,7 +19,32 @@ class CompressorTestSchema(BaseModel):
     tag_de_y : str = "VYT-1231800A" # Drive end radial probe Tag number for Y-axis
     tag_nde_x : str = "VXT-1231900A" # Non-drive end radial probe Tag number for X-axis
     tag_nde_y : str = "VYT-1231900A" # Non-drive end radial probe Tag number for Y-axis
+    country : str = "Germany" # Country where the manufacturer test bench is located.
 
+class CompressorTestUpdateSchema(BaseModel):
+    """
+    Defines how the compressor test update data should be represented.
+    """
+    model: Optional[str] = Field(default="", description="Compressor model")
+    clearance_de: Optional[float] = Field(default="", description="DE clearance value")
+    clearance_nde: Optional[float] = Field(default="", description="NDE clearance value")
+    unbalance_mass: Optional[float] = Field(default="", description="Unbalance mass")
+    oil_temperature: Optional[float] = Field(default="", description="Oil temperature")
+    tag_de_x : Optional[str] = Field(default="", description="DE X tag value")
+    tag_de_y : Optional[str] = Field(default="", description="DE Y tag value")
+    tag_nde_x : Optional[str] = Field(default="", description="NDE X tag value")
+    tag_nde_y : Optional[str] = Field(default="", description="NDE Y tag value")
+    country : Optional[str] = Field(default="", description="Country")
+
+    @field_validator('*', mode='before')
+    @classmethod
+    def empty_str_to_none(cls, v):
+        if v == '' or v == 'null' or v is None:
+            return None
+        return v
+    def model_dump(self, **kwargs) -> Dict[str, Any]:
+        # Override model_dump method to exclude None values
+        return super().model_dump(exclude_none=True, **kwargs)
 
 class CompressorTestSearchSchema(BaseModel):
     """ 
