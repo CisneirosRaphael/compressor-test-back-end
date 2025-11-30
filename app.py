@@ -42,7 +42,8 @@ def add_compressor_test(form: CompressorTestSchema):
         tag_de_x = form.tag_de_x,
         tag_de_y = form.tag_de_y,
         tag_nde_x = form.tag_nde_x,
-        tag_nde_y = form.tag_nde_y
+        tag_nde_y = form.tag_nde_y,
+        country = form.country
         )
     logger.debug(f"Adding compressor test with Tag: '{compressor_test.tag}' \
                  for project '{compressor_test.project}'")

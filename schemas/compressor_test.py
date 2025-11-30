@@ -55,7 +55,8 @@ def show_compressors_tests(compressor_test: List[CompressorTest]):
             "tag_de_x": test.tag_de_x,
             "tag_de_y": test.tag_de_y,
             "tag_nde_x": test.tag_nde_x,
-            "tag_nde_y": test.tag_nde_y
+            "tag_nde_y": test.tag_nde_y,
+            "country": test.country,
         })
 
     return {"CompressorsTests": result}
@@ -77,6 +78,7 @@ class CompressorTestViewSchema(BaseModel):
     tag_de_y : Optional[float] = "VYE-1231800"
     tag_nde_x : Optional[float] = "VXE-1231900"
     tag_nde_y : Optional[float] = "VYE-1231900"
+    country: Optional[str] = "Germany"
 
 
 class CompressorTestDelSchema(BaseModel):
@@ -102,4 +104,5 @@ def show_compressor_test(compressor_test: CompressorTest):
         "tag_de_y" : compressor_test.tag_de_y,
         "tag_nde_x" : compressor_test.tag_nde_x,
         "tag_nde_y" : compressor_test.tag_nde_y,
+        "country" : compressor_test.country,
     }

@@ -22,11 +22,13 @@ class CompressorTest(Base):
     tag_de_y = Column(String(12))
     tag_nde_x = Column(String(12))
     tag_nde_y = Column(String(12))
+    country = Column(String(12))
     date_input = Column(DateTime, default=datetime.now())
 
     def __init__(self, tag:str, project:str, model:str, clearance_de:str,
                  clearance_nde:str, unbalance_mass:float, oil_temperature:float,
                  tag_de_x :str, tag_de_y :str, tag_nde_x:str, tag_nde_y:str,
+                 country:str,
                  date_input:Union[DateTime, None] = None):
         """
         Instantiate a CompressorTest object with information about a specific compressor test.
@@ -47,13 +49,15 @@ class CompressorTest(Base):
             oil_temperature: float
                 Oil inlet temperature at the bearing (in °C).
             tag_de_x: str
-                Drive end side radial probe Tag number for X-axis
+                Drive end side radial probe Tag number for X-axis.
             tag_de_y: str
-                Drive end side radial probe Tag number for Y-axis
+                Drive end side radial probe Tag number for Y-axis.
             tag_nde_x: float
-                Non-drive end side radial probe Tag number for X-axis
+                Non-drive end side radial probe Tag number for X-axis.
             tag_nde_y: float
-                Non-drive end side radial probe Tag number for Y-axis
+                Non-drive end side radial probe Tag number for Y-axis.
+            country: srt
+                Country where the manufacturer test bench is located.
             date_input: float
                 Date when the test data was inserted into database.
         """
@@ -69,6 +73,7 @@ class CompressorTest(Base):
         self.tag_de_y = tag_de_y.upper()
         self.tag_nde_x = tag_nde_x.upper()
         self.tag_nde_y = tag_nde_y.upper()
+        self.country = country[0].upper() + country[1:]
 
         # If no date is provided, use the system's current date/time
         if date_input:
